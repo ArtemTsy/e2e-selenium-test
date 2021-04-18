@@ -24,18 +24,6 @@ public class GlobalHelper extends TestBase {
 
     }
 
-    public boolean verifyElementText(WebElement element, String elementName, String expectedText) {
-
-        System.out.println("Проверяем текст элемента " + elementName  + "\nТекст элемента - '" + element.getText() + "'");
-        if (expectedText.contains(element.getText())) {
-            System.out.println("Шаг пройден. Текст совпадает");
-            return true;
-        } else {
-            System.err.println("Шаг не пройден. Текст отличается");
-            return false;
-        }
-    }
-
     public boolean verifyElementText(WebElement element, String expectedText)
     {
         System.out.println("Текст элемента - \"" + element.getText() + "\"");
@@ -114,6 +102,21 @@ public class GlobalHelper extends TestBase {
         System.out.println("Ждём элемент \"" + elementName + "\" (" + DefaultTimeout + " секунд)");
         new WebDriverWait(driver, DefaultTimeout).until(ExpectedConditions.visibilityOf(element));
         System.out.println("Элемент виден");
+    }
+
+    public boolean verifyElementPresent(WebElement element) {
+        try {
+            if(element.isDisplayed()) {
+                System.out.println("Элемент присутствует(Отображается). Имя: " + element.getText());
+                return true;
+            } else {
+                System.out.println("Элемент присутствует, но не отображается. Имя: " + element.getText());
+                return false;
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println("Элемент не присутствует(Отображается)");
+            return false;
+        }
     }
 
 }

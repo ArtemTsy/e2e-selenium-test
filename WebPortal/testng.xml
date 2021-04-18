@@ -1,12 +1,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Sequential Test Suite" >
     <!--<parameter name="properties" value="config.properties"/>-->
-    <test name="E2E Selenium Web Test">
+    <test name="E2E Selenium Login Test">
         <classes>
             <class name="io.dev.zveno.WebLogin"/>
         </classes>
     </test>
-    <test name="E2E Selenium Web Test1">
+    <test name="E2E Selenium Support Test">
         <classes>
             <class name="io.dev.zveno.WebSupport"/>
         </classes>
