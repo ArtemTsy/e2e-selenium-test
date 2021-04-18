@@ -37,6 +37,7 @@ public class AllureListeners extends TestListenerAdapter {
 
     @Attachment
     public static String saveLogs(String message) {
+
         return message;
     }
 }

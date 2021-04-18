@@ -1,6 +1,12 @@
 package io.dev.zveno;
 
+import io.dev.zveno.constant.ValidSaveButton;
+import io.dev.zveno.constant.ValidSupportMessage;
 import io.dev.zveno.listeners.AllureListeners;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -11,19 +17,11 @@ import static org.testng.Assert.assertTrue;
 @Listeners({AllureListeners.class})
 public class WebSupport extends ParentTest{
 
-    /*@BeforeClass
-    public void openBrowser() {
-
-        WebDriverManager.chromedriver().version("89.0.4389.23").setup();
-
-        driver = getDriver();
-
-        loginPage = PageFactory.initElements(GlobalHelper.driver, WebPortalLoginPage.class);
-        page = PageFactory.initElements(GlobalHelper.driver, WebPortalPage.class);
-
-    }*/
-
     @Test(priority = 1)
+    @Epic("Тесты веб-приложения dev.zveno.io")
+    @Feature("Тестирование отправки сообщения в техподдержку")
+    @Description(value = "В этом тесте происходит переход на страницу входа и вход в существующий аккаунт")
+    @Story("Тест производит производит вход на страницу приложения")
     public void login(){
 
         loginPage.goingLoginPage();
@@ -33,84 +31,99 @@ public class WebSupport extends ParentTest{
 
     //check element for support
     @Test(priority = 2)
+    @Epic("Тесты веб-приложения dev.zveno.io")
+    @Feature("Тестирование отправки сообщения в техподдержку")
+    @Description(value = "В этом тесте происходит переход на страницу техподдержки и проверка на наличие элементов отправки сообщения")
+    @Story("Тест производит проверку формы техподдержки")
     public void chooseSupport(){
-        //field assert......++
-        page.goToSupport();
 
-        verifyElementPresent(page.supportContent);
-        verifyElementPresent(page.messageTypeSelector);
-        verifyElementPresent(page.descriptionInput);
-        verifyElementPresent(page.fileInput);
-        verifyElementPresent(page.cancelButton);
-        verifyElementPresent(page.saveButton);
+        page.goToSupport();
+        page.verifySupportContent();
+        page.verifyMessageTypeSelector();
+        page.verifyDescriptionInput();
+        page.verifyFileInput();
+        page.verifyCancelButton();
+        page.verifySaveButton();
 
     }
 
     //positive
     //parametrize
     @Test(priority = 3)
-    private void createRequestIsTrue(){
+    @Epic("Тесты веб-приложения dev.zveno.io")
+    @Feature("Тестирование отправки сообщения в техподдержку")
+    @Description(value = "В этом тесте производится проверка поведения при вводе корректных значений")
+    @Story("Тест ввода в форму допустимых значений")
+    public void insertCorrectlySupportFields(){
 
         //Without a file
-        page.selectTypeOfMessage(page.defaultMessageType);
-        page.writeDescription("1.\n2.\n3.\n4.\n5.");
-        assertTrue(verifyElementPresent(page.saveButton), "Кнопка не активна");
-        page.clickElement(page.cancelButton, "Отменить");
+        page.cleanSupportFields();
+        page.selectDefaultTypeOfMessage();
+        page.writeValidDescription();
+        page.validSaveButton(ValidSaveButton.VALID);
+        page.cleanSupportFields();
 
         //With file
-        page.selectTypeOfMessage(page.defaultMessageType);
-        page.writeDescription("1.\n2.\n3.\n4.\n5.");
-        page.fileInput.sendKeys(page.createFileWithText("TestRequestFile", "Test Request Message"));
-        assertTrue(verifyElementPresent(page.saveButton), "Кнопка не активна");
+        page.cleanSupportFields();
+        page.selectDefaultTypeOfMessage();
+        page.writeValidDescription();
+        page.attachTextFile();
+        page.validSaveButton(ValidSaveButton.VALID);
+
 
     }
 
     //negative
     //parametrize
     @Test(priority = 4)
-    private void createMessageIsFalse(){
-
-        page.clickElement(page.cancelButton, "Отменить");
+    @Epic("Тесты веб-приложения dev.zveno.io")
+    @Feature("Тестирование отправки сообщения в техподдержку")
+    @Description(value = "В этом тесте производится проверка поведения при вводе некорректных значений")
+    @Story("Тест ввода в форму недопустимых значений")
+    public void createMessageIsFalse(){
 
        //validate state page
-        page.clickElement(page.messageTypeSelector, "Selector Type of Message");
-        page.clickElement(page.descriptionInput, "Description Input");
-        assertFalse(verifyElementPresent(page.saveButton), "Кнопка активна");
-        //page.allertsIsPresent();
+        page.cleanSupportFields();
+        page.insertEmptyTypeAndDescription();
+        page.verifyValidSupportMessage(ValidSupportMessage.FULL_INVALID);
+        page.validSaveButton(ValidSaveButton.INVALID);
 
-        page.selectTypeOfMessage(page.defaultMessageType);
-        assertFalse(verifyElementPresent(page.saveButton), "Кнопка активна");
-        assertTrue(verifyElementPresent(page.descriptionAllert), "Сообщение об ошибке не показано");
-        page.clickElement(page.cancelButton, "Отменить");
+        page.cleanSupportFields();
+        page.insertEmptyDescription();
+        page.verifyValidSupportMessage(ValidSupportMessage.INVALID_DESCRIPTION);
+        page.validSaveButton(ValidSaveButton.INVALID);
 
-        page.clickElement(page.messageTypeSelector, "Selector Type of Message");
-        page.writeDescription("1.\n2.\n3.\n4.\n5.");
-        page.clickElement(page.descriptionInput, "Description Input");
-        assertFalse(verifyElementPresent(page.saveButton), "Кнопка активна");
-        assertTrue(verifyElementPresent(page.typeMessageAllert), "Сообщение об ошибке не показано");
-        page.clickElement(page.cancelButton, "Отменить");
+        page.cleanSupportFields();
+        page.insertEmptyType();
+        page.verifyValidSupportMessage(ValidSupportMessage.INVALID_TYPE);
+        page.validSaveButton(ValidSaveButton.INVALID);
 
     }
 
     @Test(priority = 5)
-
-    private void clickToSubmit(){
+    @Epic("Тесты веб-приложения dev.zveno.io")
+    @Feature("Тестирование отправки сообщения в техподдержку")
+    @Description(value = "В этом тесте производится отправка сообщения в техподдержку, используя допустимые значения")
+    @Story("Тест отправки сообщения")
+    public void sendMessage() throws InterruptedException {
 
         //Without a file
-        page.selectTypeOfMessage(page.defaultMessageType);
-        page.writeDescription("1.\n2.\n3.\n4.\n5.");
-        assertTrue(verifyElementPresent(page.saveButton), "Кнопка не активна");
-        page.clickElement(page.saveButton, "Save");
-        waitForElement(page.modalWindow, "Модальное окно");
-        assertTrue(verifyElementPresent(page.modalWindow), "Модальное окно не появилось");
-        page.clickElement(page.modalWindowOkButton, "ОК");
+        page.cleanSupportFields();
+        page.selectDefaultTypeOfMessage();
+        page.writeValidDescription();
+        page.verifyValidSupportMessage(ValidSupportMessage.FULL_VALID);
+        page.clickSaveButton();
+        page.verifyModalWindow();
+        page.closeModalWindow();
 
         //With file
-        page.selectTypeOfMessage(page.defaultMessageType);
-        page.writeDescription("1.\n2.\n3.\n4.\n5.");
-        page.fileInput.sendKeys(page.createFileWithText("TestRequestFile.txt", "Test Request Message"));
-        assertTrue(page.clickElement(page.saveButton, "Save"));
-        assertTrue(verifyElementPresent(page.modalWindow), "Модальное окно не появилось");
+        page.cleanSupportFields();
+        page.selectDefaultTypeOfMessage();
+        page.writeValidDescription();
+        page.attachTextFile();
+        page.clickSaveButton();
+        page.verifyModalWindow();
+        page.closeModalWindow();
 
     }
 }
