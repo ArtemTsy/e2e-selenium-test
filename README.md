@@ -13,7 +13,8 @@ $ mvn allure:serve
 ```
 1)Selenium
 2)TestNG
-3)Allure
+3)Maven
+4)Allure
 ```
 
 ## Язык разработки
