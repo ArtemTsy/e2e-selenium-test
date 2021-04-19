@@ -6,7 +6,7 @@
 $ mkdir <your dir>/e2e-selenium-test/WebPortal
 $ mvn clean test 
 (Test Passed/Failed)
-$mvn allure:serve
+$ mvn allure:serve
 ```
 ## Технологии
 
